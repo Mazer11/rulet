@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -63,7 +61,12 @@ fun RuleScreen() {
         animationSpec = tween(durationMillis = 3000),
         finishedListener = {
             val index = (360 - (it % 360)) / (360f / RuletRules.list.size)
-            number.value = RuletRules.list[index.roundToInt()].number
+            val result = RuletRules.list[index.roundToInt()]
+            number.value = result.number
+            if (prediction.value.color == result.color)
+                score.value += 1
+            else
+                score.value -= 1
             buttonEnabled.value = true
         }
     )
@@ -99,7 +102,9 @@ fun RuleScreen() {
                 )
             }
             Box(
-                modifier = Modifier.size((screenWidth + 24).dp).padding(top = 16.dp)
+                modifier = Modifier
+                    .size((screenWidth + 24).dp)
+                    .padding(top = 16.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ruletka),
@@ -130,6 +135,7 @@ fun RuleScreen() {
                                 color = RuletteColor.Red
                             )
                         },
+                        enabled = buttonEnabled.value,
                         modifier = Modifier
                             .padding(bottom = 8.dp)
                             .border(
@@ -158,6 +164,7 @@ fun RuleScreen() {
                                 color = RuletteColor.Black
                             )
                         },
+                        enabled = buttonEnabled.value,
                         modifier = Modifier
                             .padding(bottom = 8.dp)
                             .border(
